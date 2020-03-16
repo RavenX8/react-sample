@@ -35,6 +35,7 @@ export function MultiSelectCell({options, textField = 'name', dataField = 'id'})
                         onChange={this.handleChange}
                         disabled={!dataItem.inEdit}
                         data={selectableOptions}
+                        data-testid={"multi-select"}
                         value={selectableOptions.filter(option => {
                             for (let value of dataValue) {
                                 if (option[this.dataField] === value)

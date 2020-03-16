@@ -1,15 +1,13 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import {toODataString} from '@progress/kendo-data-query';
-import {Notification, NotificationGroup} from '@progress/kendo-react-notification';
-import {Fade} from '@progress/kendo-react-animation'
+import {Notify} from "./notifications";
 
 class DataLoader extends Component {
     state = {
         lastSuccess: '',
         pending: '',
-        error: false,
-        errorMessage: 'Oops! Something went wrong ...'
+        notifications: []
     };
 
     requestDataIfNeeded() {
@@ -42,34 +40,27 @@ class DataLoader extends Component {
                     } else if (res.type.indexOf('FAILURE') !== -1) {
                         // Throw up a notification indicating an error occurred
                         const data = res.payload.message;
-                        this.setState({error: true, errorMessage: data});
+                        const message = {type: 'error', text: data};
+                        this.setState({
+                            notifications: this.state.notifications.concat(message)
+                        });
                     }
                 });
         }
     }
 
+    onCloseNotification = (data) => {
+        this.setState({
+            notifications: this.state.notifications.filter(notification => notification !== data)
+        });
+    };
+
     render() {
         this.requestDataIfNeeded();
+        const notifyBox = Notify(this.state.notifications, this.onCloseNotification);
         return (
             <>
-                <NotificationGroup
-                    style={{
-                        right: 0,
-                        bottom: 0,
-                        alignItems: 'flex-start',
-                        flexWrap: 'wrap-reverse'
-                    }}
-                >
-                    <Fade enter={true} exit={true}>
-                        {this.state.error && <Notification
-                            type={{style: 'error', icon: true}}
-                            closable={true}
-                            onClose={() => this.setState({error: false})}
-                        >
-                            <span>{this.state.errorMessage}</span>
-                        </Notification>}
-                    </Fade>
-                </NotificationGroup>
+                {notifyBox}
                 {this.state.pending && <LoadingPanel container={this.props.container}/>}
             </>
         );

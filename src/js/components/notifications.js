@@ -2,7 +2,7 @@ import React from "react";
 import {Fade} from "@progress/kendo-react-animation";
 import {Notification, NotificationGroup} from "@progress/kendo-react-notification";
 
-export function Notify(notifications) {
+export function Notify(notifications, onClose) {
     return (<div>
         {(notifications.length > 0) && <NotificationGroup
             style={{
@@ -22,7 +22,8 @@ export function Notify(notifications) {
                             type={{style: type, icon: true}}
                             closable={true}
                             onClose={() => {
-                                notifications.remove(notifications[index])
+                                if (onClose && typeof onClose === 'function')
+                                    onClose(notifications[index]);
                             }}
                         >
                             <span>{text}</span>

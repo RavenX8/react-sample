@@ -5,7 +5,6 @@ import * as groupActions from "../actions/group-actions"
 import * as types from "../constants/action-types"
 import {createMiddleware} from "redux-callapi-middleware";
 import {CALL_API_PHASE} from "redux-callapi-middleware";
-import {MODIFY_USER_GROUPS} from "../constants/action-types";
 
 const onSuccess = (response) => {
     if (!response.ok) throw new Error('Error');
