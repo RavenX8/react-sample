@@ -1,6 +1,13 @@
 import React, {Component} from 'react';
 import {connect} from "react-redux";
-import {GridWithState as Grid} from "../components/table/table";
+import {
+    GridWithState as Grid,
+    ITEM_CHANGE_ADD,
+    ITEM_CHANGE_REMOVE,
+    ITEM_CHANGE_UPDATE,
+    TOOLBAR_DELETE_SELECTED,
+    TOOLBAR_REFRESH
+} from "../components/table/table";
 import {ColumnMenu} from "../components/table/gird-column-menu";
 import {GridColumns} from "../components/table/grid-columns";
 import {getUserGroupsList} from "../selectors";
@@ -45,7 +52,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(class GroupsTable ex
 
     onToolbarClick = (event) => {
         switch (event.value) {
-            case 'refresh': {
+            case TOOLBAR_REFRESH: {
                 this.props.getGroups()
                     .then(res => {
                         if (event.callback && typeof event.callback === 'function')
@@ -53,7 +60,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(class GroupsTable ex
                     });
                 break;
             }
-            case 'delete-selected': {
+            case TOOLBAR_DELETE_SELECTED: {
                 this.props.deleteGroups(event.dataItem);
                 break;
             }
@@ -64,13 +71,13 @@ export default connect(mapStateToProps, mapDispatchToProps)(class GroupsTable ex
 
     onDataChange = (event) => {
         switch (event.value) {
-            case 'add': {
+            case ITEM_CHANGE_ADD: {
                 return this.props.postGroups(event.dataItem);
             }
-            case 'update': {
+            case ITEM_CHANGE_UPDATE: {
                 return this.props.putGroups(event.dataItem);
             }
-            case 'remove': {
+            case ITEM_CHANGE_REMOVE: {
                 return this.props.deleteGroups(event.dataItem);
             }
             default:

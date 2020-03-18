@@ -1,6 +1,13 @@
 import React, {Component} from 'react';
 import {connect} from "react-redux";
-import {GridWithState as Grid} from "../components/table/table";
+import {
+    GridWithState as Grid,
+    ITEM_CHANGE_ADD,
+    ITEM_CHANGE_REMOVE,
+    ITEM_CHANGE_UPDATE,
+    TOOLBAR_DELETE_SELECTED,
+    TOOLBAR_REFRESH
+} from "../components/table/table";
 import {ColumnMenu} from "../components/table/gird-column-menu";
 import {MultiSelectCell} from "../components/table/multi-select-cell";
 import {GridColumns} from "../components/table/grid-columns";
@@ -78,7 +85,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(class UserTable exte
 
     onToolbarClick = (event) => {
         switch (event.value) {
-            case 'refresh': {
+            case TOOLBAR_REFRESH: {
                 this.props.getUsers()
                     .then(res => {
                         if (event.callback && typeof event.callback === 'function')
@@ -86,7 +93,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(class UserTable exte
                     });
                 break;
             }
-            case 'delete-selected': {
+            case TOOLBAR_DELETE_SELECTED: {
                 this.props.deleteUsers(event.dataItem);
                 break;
             }
@@ -97,13 +104,13 @@ export default connect(mapStateToProps, mapDispatchToProps)(class UserTable exte
 
     onDataChange = (event) => {
         switch (event.value) {
-            case 'add': {
+            case ITEM_CHANGE_ADD: {
                 return this.props.postUsers(event.dataItem);
             }
-            case 'update': {
+            case ITEM_CHANGE_UPDATE: {
                 return this.props.putUsers(event.dataItem);
             }
-            case 'remove': {
+            case ITEM_CHANGE_REMOVE: {
                 return this.props.deleteUsers(event.dataItem);
             }
             default:

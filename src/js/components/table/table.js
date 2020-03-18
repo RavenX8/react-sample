@@ -5,6 +5,15 @@ import {CommandCell} from "./command-cell";
 import DataLoader from "../loading-portal";
 import {ModalDialog} from "../dialog-box";
 
+const TOOLBAR_ADD = "add";
+const TOOLBAR_CANCEL = "cancel";
+export const TOOLBAR_REFRESH = "refresh";
+export const TOOLBAR_DELETE_SELECTED = "delete-selected";
+
+export const ITEM_CHANGE_ADD = "add";
+export const ITEM_CHANGE_UPDATE = "update";
+export const ITEM_CHANGE_REMOVE = "remove";
+
 export class GridWithState extends Component {
     constructor(props) {
         super(props);
@@ -143,7 +152,7 @@ export class GridWithState extends Component {
                         <button
                             title="Refresh"
                             className="k-button k-primary"
-                            onClick={event => this.onToolbarButtonClick(event, 'refresh')}
+                            onClick={event => this.onToolbarButtonClick(event, TOOLBAR_REFRESH)}
                             data-testid={"refresh-table"}
                         >
                             Refresh
@@ -151,7 +160,7 @@ export class GridWithState extends Component {
                         <button
                             title="Add new"
                             className="k-button k-primary"
-                            onClick={event => this.onToolbarButtonClick(event, 'add')}
+                            onClick={event => this.onToolbarButtonClick(event, TOOLBAR_ADD)}
                             data-testid={"add-row"}
                         >
                             Add new
@@ -159,7 +168,7 @@ export class GridWithState extends Component {
                         {hasSelectedItems && (<button
                             title="Delete Selected Items"
                             className="k-button"
-                            onClick={event => this.onToolbarButtonClick(event, 'delete-selected')}
+                            onClick={event => this.onToolbarButtonClick(event, TOOLBAR_DELETE_SELECTED)}
                             data-testid={"delete-selected-row"}
                         >
                             Delete Selected Items
@@ -168,7 +177,7 @@ export class GridWithState extends Component {
                             <button
                                 title="Cancel current changes"
                                 className="k-button"
-                                onClick={event => this.onToolbarButtonClick(event, 'cancel')}
+                                onClick={event => this.onToolbarButtonClick(event, TOOLBAR_CANCEL)}
                                 data-testid={"cancel-current-changes"}
                             >
                                 Cancel current changes
@@ -199,7 +208,7 @@ export class GridWithState extends Component {
 
     onToolbarButtonClick = (event, command) => {
         switch (command) {
-            case 'add': {
+            case TOOLBAR_ADD: {
                 let data = this.makeDeepCopy(this.state.allData);
                 let newItem = {[this.props.editField]: true, id: undefined};
 
@@ -209,13 +218,13 @@ export class GridWithState extends Component {
                 });
                 break;
             }
-            case 'cancel': {
+            case TOOLBAR_CANCEL: {
                 this.setState({
                     result: process(this.makeDeepCopy(this.state.allData), this.state.dataState)
                 });
                 break;
             }
-            case 'delete-selected': {
+            case TOOLBAR_DELETE_SELECTED: {
                 let dataToDelete = this.state.result.data.filter(item => item.selected);
                 let deleteEvents = dataToDelete.map(item => this.createDeleteEvent(command, item, this.props.onClick));
 
@@ -224,7 +233,7 @@ export class GridWithState extends Component {
                 });
                 break;
             }
-            case 'refresh': {
+            case TOOLBAR_REFRESH: {
                 if (this.props.onClick && typeof this.props.onClick === 'function')
                     this.props.onClick.call(undefined, {event, value: command, callback: this.onDataReceived});
                 break;
@@ -300,7 +309,7 @@ export class GridWithState extends Component {
                     });
                     return;
                 }
-                case 'add': {
+                case ITEM_CHANGE_ADD: {
                     if (false === this.validateRequired(event.dataItem)) {
                         //TODO: throw error notification
                         console.log('data validation failed');
@@ -319,7 +328,7 @@ export class GridWithState extends Component {
                     });
                     return;
                 }
-                case 'update': {
+                case ITEM_CHANGE_UPDATE: {
                     if (false === this.validateRequired(event.dataItem)) {
                         //TODO: throw error notification
                         console.log('data validation failed');
@@ -335,7 +344,7 @@ export class GridWithState extends Component {
                     });
                     break;
                 }
-                case 'remove': {
+                case ITEM_CHANGE_REMOVE: {
                     this.cleanRecord(event);
                     this.setState({
                         pendingDeleteAction: this.state.pendingDeleteAction.concat(this.createDeleteEvent(event.value, event.dataItem, this.props.onChange))
